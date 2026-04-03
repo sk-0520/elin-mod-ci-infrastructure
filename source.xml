@@ -1,4 +1,9 @@
 <xml>
+	<!-- この名前に該当するアセンブリはスタブとして扱う -->
+	<stub>
+		<assembly name="Elin.dll" />
+	</stub>
+
 	<!-- Mod テンプレから定期的に更新 -->
 
 	<ItemGroup Condition="!$(MSBuildProjectName.Contains('.Generator'))">
