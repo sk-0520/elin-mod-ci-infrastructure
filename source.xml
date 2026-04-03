@@ -1,14 +1,24 @@
 <xml>
+	<!-- この名前に該当するアセンブリはスタブとして扱う -->
+	<stub>
+		<assembly name="Elin.dll" />
+		<assembly name="Plugins.ActorSystem.dll" />
+		<assembly name="Plugins.BaseCore.dll" />
+		<assembly name="Plugins.Calc.dll" />
+		<assembly name="Plugins.dll" />
+		<assembly name="Plugins.Dungen.dll" />
+		<assembly name="Plugins.Etc.Markov.dll" />
+		<assembly name="Plugins.Modding.dll" />
+		<assembly name="Plugins.NameGen.dll" />
+		<assembly name="Plugins.NoiseSystem.dll" />
+		<assembly name="Plugins.Sound.dll" />
+		<assembly name="Plugins.Tween.dll" />
+	</stub>
+
 	<!-- Mod テンプレから定期的に更新 -->
 
 	<ItemGroup Condition="!$(MSBuildProjectName.Contains('.Generator'))">
-		<Reference Include="$(ElinPath)\BepInEx\core\BepInEx*.dll">
-			<Private>$(ReferencePrivate)</Private>
-		</Reference>
-		<Reference Include="$(ElinPath)\BepInEx\core\0Harmony.dll">
-			<Private>$(ReferencePrivate)</Private>
-		</Reference>
-		<Reference Include="$(ElinPath)\BepInEx\core\Mono*.dll">
+		<Reference Include="$(ElinPath)\BepInEx\core\*.dll">
 			<Private>$(ReferencePrivate)</Private>
 		</Reference>
 		<Reference Include="$(ElinPath)\Elin_Data\Managed\NPOI.dll">

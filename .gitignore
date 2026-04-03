@@ -1,0 +1,6 @@
+bin
+obj
+*.sln
+*.slnx
+*.stub
+git-shell.bat
