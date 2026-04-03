@@ -1,0 +1,33 @@
+<xml>
+	<!-- Mod テンプレから定期的に更新 -->
+
+	<ItemGroup Condition="!$(MSBuildProjectName.Contains('.Generator'))">
+		<Reference Include="$(ElinPath)\BepInEx\core\BepInEx*.dll">
+			<Private>$(ReferencePrivate)</Private>
+		</Reference>
+		<Reference Include="$(ElinPath)\BepInEx\core\0Harmony.dll">
+			<Private>$(ReferencePrivate)</Private>
+		</Reference>
+		<Reference Include="$(ElinPath)\BepInEx\core\Mono*.dll">
+			<Private>$(ReferencePrivate)</Private>
+		</Reference>
+		<Reference Include="$(ElinPath)\Elin_Data\Managed\NPOI.dll">
+			<Private>$(ReferencePrivate)</Private>
+		</Reference>
+		<Reference Include="$(ElinPath)\Elin_Data\Managed\UnityEngine*.dll">
+			<Private>$(ReferencePrivate)</Private>
+		</Reference>
+		<Reference Include="$(ElinPath)\Elin_Data\Managed\Elin.dll">
+			<Private>$(ReferencePrivate)</Private>
+		</Reference>
+		<Reference Include="$(ElinPath)\Elin_Data\Managed\Plugins*.dll">
+			<Private>$(ReferencePrivate)</Private>
+		</Reference>
+		<Reference Include="$(ElinPath)\Elin_Data\Managed\UniTask*.dll">
+			<Private>$(ReferencePrivate)</Private>
+		</Reference>
+		<Reference Include="$(ElinPath)\Elin_Data\Managed\Newtonsoft.Json.dll">
+			<Private>$(ReferencePrivate)</Private>
+		</Reference>
+	</ItemGroup>
+</xml>
