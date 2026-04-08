@@ -1,0 +1,111 @@
+name: Build
+
+# 本モジュールを使用して elin-mod-dev-setup がビルドできるかを確認
+# elin-mod-dev-setup で組み込んでいたんだけど、最終的に Mod 作成者側に cron を押し付けることになるのでこっちでやることにした
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: "<Build> Mod"
+
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        configuration:
+          - Debug
+          - Release
+
+    steps:
+      - name: Checkout infrastructure
+        uses: actions/checkout@v6
+
+      - name: Checkout Mod Template
+        uses: actions/checkout@v6
+        with: &checkout-mod-template
+            repository: sk-0520/elin-mod-dev-setup
+            path: elin-mod-dev-setup
+
+      - name: Setup Mod Module
+        shell: pwsh
+        run: &setup-mod-module |
+          # .props
+          $propsPath = Join-Path -Path "elin-mod-dev-setup" -ChildPath "Directory.Build.props.user"
+          $propsXml = [xml](Get-Content -Path $propsPath -Encoding UTF8)
+          $propsXml.Project.PropertyGroup.AssemblyName = "Elin.Mod.Dev.Sample"
+          $propsXml.Save($propsPath)
+
+          # .targets
+          $targetsPath = Join-Path -Path "elin-mod-dev-setup" -ChildPath "Directory.Build.targets.user"
+          $targetsXml = [xml](Get-Content -Path $targetsPath -Encoding UTF8)
+
+          $propertyGroup = $targetsXml.CreateElement("PropertyGroup")
+          $steamPathGroup = $targetsXml.CreateElement("SteamPath")
+          $steamPathGroup.InnerText = "${{ github.workspace }}"
+          $elinPathGroup = $targetsXml.CreateElement("ElinPath")
+          $elinPathGroup.InnerText = '$(SteamPath)\libs'
+          $modPathGroup = $targetsXml.CreateElement("ModPath")
+          $modPathGroup.InnerText = "${{ github.workspace }}\output"
+
+          $propertyGroup.AppendChild($steamPathGroup)
+          $propertyGroup.AppendChild($elinPathGroup)
+          $propertyGroup.AppendChild($modPathGroup)
+
+          $targetsXml.Project.AppendChild($propertyGroup)
+
+          $targetsXml.Save($targetsPath)
+
+          Get-Content -Path $propsPath -Encoding UTF8
+          Get-Content -Path $targetsPath -Encoding UTF8
+
+      - name: Build
+        shell: pwsh
+        run: |
+          Set-Location -Path "elin-mod-dev-setup"
+          dotnet build -c ${{ matrix.configuration }}
+
+      - name: Artifact
+        if: matrix.configuration == 'Release'
+        uses: actions/upload-artifact@v7
+        with:
+          name: artifact
+          path: output
+
+  test:
+    name: "<Test> Mod"
+
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        configuration:
+          - Debug
+          - Release
+
+    steps:
+      - name: Checkout infrastructure
+        uses: actions/checkout@v6
+
+      - name: Checkout Mod Template
+        uses: actions/checkout@v6
+        with: *checkout-mod-template
+
+      - name: Setup Mod Module
+        shell: pwsh
+        run: *setup-mod-module
+
+      - name: Test
+        shell: pwsh
+        run: |
+          Set-Location -Path "elin-mod-dev-setup"
+          dotnet test  -c ${{ matrix.configuration }}
+
