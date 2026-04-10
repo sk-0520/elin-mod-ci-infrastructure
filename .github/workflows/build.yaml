@@ -38,14 +38,14 @@ jobs:
       - name: Setup Mod Module
         shell: pwsh
         run: &setup-mod-module |
-          # .props
-          $propsPath = Join-Path -Path "elin-mod-dev-setup" -ChildPath "Directory.Build.props.user"
-          $propsXml = [xml](Get-Content -Path $propsPath -Encoding UTF8)
-          $propsXml.Project.PropertyGroup.AssemblyName = "Elin.Mod.Dev.Sample"
-          $propsXml.Save($propsPath)
+          # Elin.Plugin.Main.Assembly.xml
+          $asmPath = Join-Path -Path "elin-mod-dev-setup" -ChildPath "Elin.Plugin.Main.Assembly.xml"
+          $asmXml = [xml](Get-Content -Path $asmPath -Encoding UTF8)
+          $asmXml.Project.PropertyGroup.AssemblyName = "Elin.Mod.Dev.Sample"
+          $asmXml.Save($asmPath)
 
-          # .targets
-          $targetsPath = Join-Path -Path "elin-mod-dev-setup" -ChildPath "Directory.Build.targets.user"
+          # Directory.Build.targets
+          $targetsPath = Join-Path -Path "elin-mod-dev-setup" -ChildPath "Directory.Build.targets"
           $targetsXml = [xml](Get-Content -Path $targetsPath -Encoding UTF8)
 
           $propertyGroup = $targetsXml.CreateElement("PropertyGroup")
@@ -64,7 +64,7 @@ jobs:
 
           $targetsXml.Save($targetsPath)
 
-          Get-Content -Path $propsPath -Encoding UTF8
+          Get-Content -Path $asmPath -Encoding UTF8
           Get-Content -Path $targetsPath -Encoding UTF8
 
       - name: Build
