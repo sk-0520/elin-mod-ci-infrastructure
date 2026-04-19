@@ -13,11 +13,19 @@ class Program
             throw new ArgumentException("No assembly paths provided.");
         }
 
+        var envPaths =Environment.GetEnvironmentVariable("STUB_ENV_PATHS");
+        var additionalPaths = envPaths?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? [];
+
+
         foreach (var path in args)
         {
             Console.WriteLine($"Processing: {path}");
             var resolver = new DefaultAssemblyResolver();
             var asmDir = Path.GetDirectoryName(path);
+            foreach (var additionalPath in additionalPaths)
+            {
+                resolver.AddSearchDirectory(additionalPath);
+            }
             if (!string.IsNullOrEmpty(asmDir))
             {
                 resolver.AddSearchDirectory(asmDir);

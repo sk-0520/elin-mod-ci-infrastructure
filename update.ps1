@@ -26,6 +26,8 @@ foreach ($item in $xml.SelectNodes("//stub/assembly")) {
     $stubs += $name
 }
 
+$envPaths = @()
+
 foreach ($include in $includes) {
     $marker = "`$(ElinPath)"
     $index = $include.indexOf($marker) # これは絶対あるの！
@@ -33,10 +35,13 @@ foreach ($include in $includes) {
     # 正確にはワイルドカードだけど、まぁ大丈夫でしょ
     $targetBlob = $include.Substring($index + $marker.Length).TrimStart("\", "/")
 
-    $blobPath = Join-Path -Path ($markerPath.Replace($marker, $ElinPath)) -ChildPath $targetBlob
+    $blobPath = Join-Path -Path $markerPath.Replace($marker, $ElinPath) -ChildPath $targetBlob
     $libItems = Get-Item -Path $blobPath
     $destBaseDir = Split-Path -Parent $targetBlob
+
     foreach ($libItem in $libItems) {
+       $envPaths += $libItem.DirectoryName
+
         $destDir = Join-Path -Path $Out -ChildPath $destBaseDir
         if (!(Test-Path -Path $destDir)) {
             New-Item -Path $destDir -ItemType Directory | Out-Null
@@ -53,6 +58,10 @@ if ($stubItems) {
 
     $stubberProj = Join-Path -Path $PSScriptRoot -ChildPath "tools\stubber\Stubber.csproj"
     $paths = $stubItems | ForEach-Object { $_.FullName }
+
+    $envPaths = $envPaths | Select-Object -Unique
+    $envPathsString = [string]::Join(";", $envPaths)
+    $env:STUB_ENV_PATHS = $envPathsString
 
     Write-Output "Running stubber..."
     & dotnet run --project $stubberProj -- $paths

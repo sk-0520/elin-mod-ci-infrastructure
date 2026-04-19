@@ -2,6 +2,17 @@
 	<!-- この名前に該当するアセンブリはスタブとして扱う -->
 	<stub>
 		<assembly name="Elin.dll" />
+		<assembly name="Plugins.ActorSystem.dll" />
+		<assembly name="Plugins.BaseCore.dll" />
+		<assembly name="Plugins.Calc.dll" />
+		<assembly name="Plugins.dll" />
+		<assembly name="Plugins.Dungen.dll" />
+		<assembly name="Plugins.Etc.Markov.dll" />
+		<assembly name="Plugins.Modding.dll" />
+		<assembly name="Plugins.NameGen.dll" />
+		<assembly name="Plugins.NoiseSystem.dll" />
+		<assembly name="Plugins.Sound.dll" />
+		<assembly name="Plugins.Tween.dll" />
 	</stub>
 
 	<!-- Mod テンプレから定期的に更新 -->
